@@ -37,7 +37,7 @@ export const experiences: Experience[] = [
       { name: 'PostgreSQL', icon: 'postgresql' },
     ],
     workType: 'Hybrid',
-    location: 'Toulouse, France',
+    location: 'Toulouse',
     type: 'Full-time',
   },
   {
@@ -57,7 +57,7 @@ export const experiences: Experience[] = [
       { name: 'Vite', icon: 'vite' },
     ],
     workType: 'On-Site',
-    location: 'Toulouse, France',
+    location: 'Toulouse',
     type: 'Student Project',
   },
   {
@@ -76,7 +76,7 @@ export const experiences: Experience[] = [
       { name: 'Vite', icon: 'vite' },
     ],
     workType: 'On-Site',
-    location: 'Toulouse, France',
+    location: 'Toulouse',
     type: 'Student Project',
   },
 ]

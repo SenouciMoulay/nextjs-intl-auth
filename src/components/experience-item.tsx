@@ -5,17 +5,30 @@ import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { motion } from 'framer-motion'
+import { useExperience } from '@/context/experience-context'
 
 interface ExperienceItemProps {
   experience: Experience
-  isActive: boolean
-  onHover: (id: string) => void
-  anyHovered: boolean
 }
 
-export function ExperienceItem({ experience, isActive, onHover, anyHovered }: ExperienceItemProps) {
+export function ExperienceItem({ experience }: ExperienceItemProps) {
+  const { activeExperience, hoveredExperienceId, setActiveExperience, setHoveredExperienceId } =
+    useExperience()
+
+  const isActive = hoveredExperienceId === experience.id
+  const anyHovered = hoveredExperienceId !== null
+  const isSelected = activeExperience?.id === experience.id
+
   const handleMouseEnter = () => {
-    onHover(experience.id)
+    setHoveredExperienceId(experience.id)
+  }
+
+  const handleMouseLeave = () => {
+    setHoveredExperienceId(null)
+  }
+
+  const handleClick = () => {
+    setActiveExperience(isSelected ? null : experience)
   }
 
   const formatDate = (date: Date | 'present') => {
@@ -28,45 +41,52 @@ export function ExperienceItem({ experience, isActive, onHover, anyHovered }: Ex
   return (
     <div
       className={cn(
-        'group relative transition-all duration-300 ease-in-out',
-        anyHovered && !isActive && 'text-muted-foreground'
+        'group relative cursor-pointer transition-all duration-300 ease-in-out',
+        anyHovered && !isActive && 'text-foreground',
+        isSelected && 'text-primary',
+        isActive && 'text-[hsl(var(--detail-color))]',
+        isSelected && 'text-[hsl(var(--detail-color))]'
       )}
       onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       onFocus={handleMouseEnter}
+      onClick={handleClick}
     >
-      <div className="relative flex w-7/12 select-none items-center justify-between">
+      <div className="w-12/12 relative flex flex-col md:flex-row md:items-center md:justify-between lg:w-9/12">
         <div className="flex items-center">
           <motion.div
             initial={{ opacity: 0, x: -10 }}
             animate={{
-              opacity: isActive ? 1 : 0,
-              x: isActive ? 0 : -10,
+              opacity: isActive || isSelected ? 1 : 0,
+              x: isActive || isSelected ? 0 : -10,
             }}
             transition={{
               duration: 0.3,
               ease: 'easeInOut',
             }}
-            className="absolute -left-24 text-xl font-medium"
+            className="absolute -left-4 text-lg font-medium md:-left-24"
           >
             {startYear}
           </motion.div>
 
-          <h3 className="text-xl font-medium">{experience.company}</h3>
+          <h3 className={cn('text-lg font-medium', isSelected && 'font-semibold')}>
+            {experience.company}
+          </h3>
         </div>
 
         <motion.div
           initial={{ opacity: 0, x: 10 }}
           animate={{
-            opacity: isActive ? 1 : 0,
-            x: isActive ? 0 : 10,
+            opacity: isActive || isSelected ? 1 : 0,
+            x: isActive || isSelected ? 0 : 10,
           }}
           transition={{
             duration: 0.3,
             ease: 'easeInOut',
           }}
-          className="text-right text-xl font-medium"
+          className="mt-1 text-left text-lg font-medium md:mt-0 md:text-right"
         >
-          — {experience.workType} / {experience.location}
+          — {experience.location}
         </motion.div>
       </div>
     </div>
