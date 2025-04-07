@@ -64,7 +64,7 @@ export function ExperienceItem({ experience }: ExperienceItemProps) {
               duration: 0.3,
               ease: 'easeInOut',
             }}
-            className="absolute -left-4 text-lg font-medium md:-left-24"
+            className="absolute -left-4 text-lg font-medium text-red-600 md:-left-24"
           >
             {startYear}
           </motion.div>

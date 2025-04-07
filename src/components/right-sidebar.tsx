@@ -67,82 +67,93 @@ export default function RightSidebar() {
   }
 
   return (
-    <div className="flex h-full flex-col gap-4 overflow-hidden px-6 pt-5">
-      <div className="flex items-center justify-between">
-        <AnimatePresence mode="wait">
-          <motion.h1
-            key={activeExperience ? activeExperience.id : 'empty'}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-            className="text-xl font-medium"
-          >
-            {activeExperience ? activeExperience.company : 'Projets'}
-          </motion.h1>
-        </AnimatePresence>
+    <div className="relative grid h-full grid-rows-[auto_1fr_auto]">
+      {/* Barre verticale sur toute la hauteur */}
+      <div className="absolute bottom-0 right-6 top-0 w-px bg-neutral-200 dark:bg-neutral-800"></div>
 
-        {activeExperience && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleClose}
-            className="flex h-8 w-8 items-center justify-center pr-4 transition-colors hover:text-muted-foreground"
-          >
-            <X size={16} />
-          </motion.button>
-        )}
+      {/* Section du haut - Titre */}
+      <motion.div
+        className="flex items-center border-b border-neutral-200 bg-transparent px-6 py-4 dark:border-neutral-800"
+        initial="hidden"
+        animate="visible"
+      >
+        <div className="flex w-full items-center justify-between">
+          <AnimatePresence mode="wait">
+            <motion.h1
+              key={activeExperience ? activeExperience.id : 'empty'}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+              className="text-xl font-medium"
+            >
+              {activeExperience ? activeExperience.company : 'Projets'}
+            </motion.h1>
+          </AnimatePresence>
+        </div>
+      </motion.div>
+
+      {/* Section du milieu - Contenu principal */}
+      <div className="overflow-auto bg-transparent px-6 py-4 pt-16">
+        <AnimatePresence mode="wait">
+          {activeExperience ? (
+            <motion.div
+              key={activeExperience.id}
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="flex flex-col gap-6"
+            >
+              <motion.div variants={childVariants} className="flex flex-col gap-1">
+                <p
+                  className={cn(
+                    'text-muted-foreground',
+                    activeExperience.endDate === 'present' &&
+                      'animate-pulse text-[hsl(var(--detail-color))]'
+                  )}
+                >
+                  {formatDate(activeExperience.startDate)} - {formatDate(activeExperience.endDate)}
+                </p>
+                <p className="mt-1 text-muted-foreground">
+                  {activeExperience.title} · {activeExperience.workType} ·{' '}
+                  {activeExperience.location}
+                </p>
+              </motion.div>
+
+              <motion.div variants={childVariants} className="flex flex-col gap-2">
+                <h3 className="text-lg font-medium">Description</h3>
+                <p className="text-muted-foreground">{activeExperience.description}</p>
+              </motion.div>
+
+              <motion.div variants={childVariants} className="flex flex-col gap-2">
+                <h3 className="text-lg font-medium">Technologies</h3>
+                <TechnologiesBadgeList technologies={activeExperience.technologies} />
+              </motion.div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="empty-state"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="flex flex-col gap-2"
+            >
+              <p className="text-muted-foreground">
+                Sélectionnez une expérience pour voir les détails
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      <AnimatePresence mode="wait">
-        {activeExperience ? (
-          <motion.div
-            key={activeExperience.id}
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="flex flex-col gap-6 pt-16"
-          >
-            <motion.div variants={childVariants} className="flex flex-col gap-1">
-              <p
-                className={cn(
-                  'text-muted-foreground',
-                  activeExperience.endDate === 'present' &&
-                    'animate-pulse text-[hsl(var(--detail-color))]'
-                )}
-              >
-                {formatDate(activeExperience.startDate)} - {formatDate(activeExperience.endDate)}
-              </p>
-              <p className="mt-1 text-muted-foreground">
-                {activeExperience.title} · {activeExperience.workType} · {activeExperience.location}
-              </p>
-            </motion.div>
-
-            <motion.div variants={childVariants} className="flex flex-col gap-2">
-              <h3 className="text-lg font-medium">Description</h3>
-              <p className="text-muted-foreground">{activeExperience.description}</p>
-            </motion.div>
-
-            <motion.div variants={childVariants} className="flex flex-col gap-2">
-              <h3 className="text-lg font-medium">Technologies</h3>
-              <TechnologiesBadgeList technologies={activeExperience.technologies} />
-            </motion.div>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="empty-state"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="mt-4 flex flex-col gap-2"
-          ></motion.div>
-        )}
-      </AnimatePresence>
+      {/* Section du bas - Zone vide */}
+      <motion.div
+        className="border-t border-neutral-200 bg-transparent py-4 dark:border-neutral-800"
+        initial="hidden"
+        animate="visible"
+      ></motion.div>
     </div>
   )
 }
